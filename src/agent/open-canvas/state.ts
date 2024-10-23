@@ -7,6 +7,7 @@ import {
   ProgrammingLanguageOptions,
   ReadingLevelOptions,
 } from "../../types";
+import { AllModelNames } from "../lib";
 
 export const OpenCanvasGraphAnnotation = Annotation.Root({
   ...MessagesAnnotation.spec,
@@ -63,7 +64,7 @@ export const OpenCanvasGraphAnnotation = Annotation.Root({
   /**
    * The model selected by user.
    */
-  model: Annotation<string | undefined>,
+  model: Annotation<AllModelNames | undefined>,
 });
 
 export type OpenCanvasGraphReturnType = Partial<

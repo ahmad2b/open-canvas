@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { createModelInstance } from "@/agent/lib";
 import { z } from "zod";
 import { ArtifactContent } from "../../../types";
 import { formatArtifactContentWithTemplate } from "../../utils";
@@ -82,10 +82,16 @@ export const generatePath = async (
     ? "rewriteArtifact"
     : "generateArtifact";
 
-  const modelWithTool = new ChatOpenAI({
-    model: "gpt-4o-mini",
+  console.log("LOG generatePath state: ", state);
+  console.log("LOG generating model instance with model: ", state.model);
+
+  const modelName = state.model ?? "gpt-4o-mini";
+
+  const modelInstance = createModelInstance(modelName, {
     temperature: 0,
-  }).withStructuredOutput(
+  }) as any;
+
+  const model = modelInstance.withStructuredOutput(
     z.object({
       route: z
         .enum(["respondToQuery", artifactRoute])
@@ -95,6 +101,21 @@ export const generatePath = async (
       name: "route_query",
     }
   );
+
+  const modelWithTool = model;
+  // const modelWithTool = new ChatOpenAI({
+  //   model: "gpt-4o-mini",
+  //   temperature: 0,
+  // }).withStructuredOutput(
+  //   z.object({
+  //     route: z
+  //       .enum(["respondToQuery", artifactRoute])
+  //       .describe("The route to take based on the user's query."),
+  //   }),
+  //   {
+  //     name: "route_query",
+  //   }
+  // );
 
   const result = await modelWithTool.invoke([
     {

@@ -1,9 +1,9 @@
-import { ChatOpenAI } from "@langchain/openai";
-import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
-import { UPDATE_HIGHLIGHTED_ARTIFACT_PROMPT } from "../prompts";
-import { ensureStoreInConfig, formatReflections } from "../../utils";
-import { ArtifactContent, Reflections } from "../../../types";
+import { createModelInstance } from "@/agent/lib";
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
+import { ArtifactContent, Reflections } from "../../../types";
+import { ensureStoreInConfig, formatReflections } from "../../utils";
+import { UPDATE_HIGHLIGHTED_ARTIFACT_PROMPT } from "../prompts";
+import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
 
 /**
  * Update an existing artifact based on the user's query.
@@ -12,10 +12,17 @@ export const updateArtifact = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const smallModel = new ChatOpenAI({
-    model: "gpt-4o",
-    temperature: 0,
+  console.log("LOG rewriteArtifactTheme state: ", state);
+  console.log("LOG generating model instance with model: ", state.model);
+  const model = createModelInstance(state.model ?? "gpt-4o-mini", {
+    temperature: 0.5,
   });
+  console.log("LOG model generated: ");
+  const smallModel = model;
+  // const smallModel = new ChatOpenAI({
+  //   model: "gpt-4o",
+  //   temperature: 0,
+  // });
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;

@@ -1,7 +1,4 @@
-import { useState } from "react";
-import { AIMessage, BaseMessage } from "@langchain/core/messages";
-import { useToast } from "./use-toast";
-import { createClient } from "./utils";
+import { reverseCleanContent } from "@/lib/normalize_string";
 import {
   Artifact,
   ArtifactContent,
@@ -12,10 +9,13 @@ import {
   ProgrammingLanguageOptions,
   ReadingLevelOptions,
 } from "@/types";
+import { AIMessage, BaseMessage } from "@langchain/core/messages";
 import { parsePartialJson } from "@langchain/core/output_parsers";
-import { useRuns } from "./useRuns";
-import { reverseCleanContent } from "@/lib/normalize_string";
 import { Thread } from "@langchain/langgraph-sdk";
+import { useState } from "react";
+import { useToast } from "./use-toast";
+import { useRuns } from "./useRuns";
+import { createClient } from "./utils";
 // import { DEFAULT_ARTIFACTS, DEFAULT_MESSAGES } from "@/lib/dummy";
 
 interface ArtifactToolResponse {
@@ -92,6 +92,7 @@ export function useGraph(useGraphInput: UseGraphInput) {
 
     const input = {
       artifact,
+      model: "gpt-4o-mini",
       ...params,
     };
 

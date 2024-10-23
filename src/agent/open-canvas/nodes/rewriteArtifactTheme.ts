@@ -1,5 +1,8 @@
-import { ChatOpenAI } from "@langchain/openai";
-import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
+// import { ChatOpenAI } from "@langchain/openai";
+import { createModelInstance } from "@/agent/lib";
+import { LangGraphRunnableConfig } from "@langchain/langgraph";
+import { ArtifactContent, Reflections } from "../../../types";
+import { ensureStoreInConfig, formatReflections } from "../../utils";
 import {
   ADD_EMOJIS_TO_ARTIFACT_PROMPT,
   CHANGE_ARTIFACT_LANGUAGE_PROMPT,
@@ -7,18 +10,24 @@ import {
   CHANGE_ARTIFACT_READING_LEVEL_PROMPT,
   CHANGE_ARTIFACT_TO_PIRATE_PROMPT,
 } from "../prompts";
-import { ensureStoreInConfig, formatReflections } from "../../utils";
-import { ArtifactContent, Reflections } from "../../../types";
-import { LangGraphRunnableConfig } from "@langchain/langgraph";
+import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
 
 export const rewriteArtifactTheme = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const smallModel = new ChatOpenAI({
-    model: "gpt-4o-mini",
+  console.log("LOG rewriteArtifactTheme state: ", state);
+  console.log("LOG generating model instance with model: ", state.model);
+  const model = createModelInstance(state.model ?? "gpt-4o-mini", {
     temperature: 0.5,
   });
+  console.log("LOG model generated: ");
+  const smallModel = model;
+
+  // const smallModel = new ChatOpenAI({
+  //   model: "gpt-4o-mini",
+  //   temperature: 0.5,
+  // });
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;

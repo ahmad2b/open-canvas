@@ -1,9 +1,9 @@
-import { ChatOpenAI } from "@langchain/openai";
-import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
-import { FOLLOWUP_ARTIFACT_PROMPT } from "../prompts";
-import { ensureStoreInConfig, formatReflections } from "../../utils";
-import { ArtifactContent, Reflections } from "../../../types";
+import { createModelInstance } from "@/agent/lib";
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
+import { ArtifactContent, Reflections } from "../../../types";
+import { ensureStoreInConfig, formatReflections } from "../../utils";
+import { FOLLOWUP_ARTIFACT_PROMPT } from "../prompts";
+import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
 
 /**
  * Generate a followup message after generating or updating an artifact.
@@ -12,11 +12,19 @@ export const generateFollowup = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const smallModel = new ChatOpenAI({
-    model: "gpt-4o-mini",
+  // const smallModel = new ChatOpenAI({
+  //   model: "gpt-4o-mini",
+  //   temperature: 0.5,
+  //   maxTokens: 250,
+  // });
+  console.log("LOG generateFollowup state: ", state);
+  console.log("LOG generating model instance with model: ", state.model);
+  const model = createModelInstance(state.model ?? "gpt-4o-mini", {
     temperature: 0.5,
     maxTokens: 250,
   });
+  console.log("LOG model generated: ");
+  const smallModel = model;
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;
