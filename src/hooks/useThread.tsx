@@ -1,14 +1,16 @@
+import { AllModelNames } from "@/agent/lib";
+import { ASSISTANT_ID_COOKIE } from "@/constants";
+import { getCookie, setCookie } from "@/lib/cookies";
+import { Thread } from "@langchain/langgraph-sdk";
 import { useEffect, useState } from "react";
 import { createClient } from "./utils";
-import { getCookie, setCookie } from "@/lib/cookies";
-import { ASSISTANT_ID_COOKIE } from "@/constants";
-import { Thread } from "@langchain/langgraph-sdk";
 
 export function useThread(userId: string) {
   const [assistantId, setAssistantId] = useState<string>();
   const [threadId, setThreadId] = useState<string>();
   const [userThreads, setUserThreads] = useState<Thread[]>([]);
   const [isUserThreadsLoading, setIsUserThreadsLoading] = useState(false);
+  const [model, setModel] = useState<AllModelNames>("gpt-4o-mini");
 
   useEffect(() => {
     if (threadId || typeof window === "undefined") return;
@@ -114,5 +116,7 @@ export function useThread(userId: string) {
     deleteThread,
     getThreadById,
     setThreadId,
+    model,
+    setModel,
   };
 }

@@ -1,11 +1,11 @@
 import { AnthropicInput, ChatAnthropic } from "@langchain/anthropic";
 import { ChatOpenAI, OpenAIChatInput } from "@langchain/openai";
 
-const openAIModels = ["gpt-4o-mini", "gpt-4o"] as const;
-const anthropicModels = ["claude-3-5-sonnet-20240620"] as const;
+export const openAIModels = ["gpt-4o-mini", "gpt-4o"] as const;
+export const anthropicModels = ["claude-3-5-sonnet-20240620"] as const;
 
-type OpenAIModel = (typeof openAIModels)[number];
-type AnthropicModel = (typeof anthropicModels)[number];
+export type OpenAIModel = (typeof openAIModels)[number];
+export type AnthropicModel = (typeof anthropicModels)[number];
 export type AllModelNames = OpenAIModel | AnthropicModel;
 
 type ModelOptions<K extends AllModelNames> = K extends OpenAIModel

@@ -1,3 +1,4 @@
+import { AllModelNames } from "@/agent/lib";
 import { reverseCleanContent } from "@/lib/normalize_string";
 import {
   Artifact,
@@ -37,6 +38,7 @@ export interface GraphInput {
   addLogs?: boolean;
   portLanguage?: ProgrammingLanguageOptions;
   fixBugs?: boolean;
+  model?: AllModelNames;
 }
 
 function removeCodeBlockFormatting(text: string): string {
@@ -60,6 +62,7 @@ interface UseGraphInput {
   userId: string;
   threadId: string | undefined;
   assistantId: string | undefined;
+  model: AllModelNames;
 }
 
 export function useGraph(useGraphInput: UseGraphInput) {
@@ -92,7 +95,7 @@ export function useGraph(useGraphInput: UseGraphInput) {
 
     const input = {
       artifact,
-      model: "gpt-4o-mini",
+      model: useGraphInput.model,
       ...params,
     };
 
