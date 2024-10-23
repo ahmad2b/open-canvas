@@ -33,10 +33,12 @@ export function useThread(userId: string) {
     const thread = await client.threads.create({
       metadata: {
         supabase_user_id: userId,
+        model: model,
       },
     });
     setThreadId(thread.thread_id);
     await getUserThreads(userId);
+    setModel(model);
     return thread;
   };
 
@@ -81,7 +83,11 @@ export function useThread(userId: string) {
 
   const getThreadById = async (id: string) => {
     const client = createClient();
-    return await client.threads.get(id);
+    const thread = await client.threads.get(id);
+    if (thread.metadata && thread.metadata.model) {
+      setModel(thread.metadata.model as AllModelNames);
+    }
+    return thread;
   };
 
   const deleteThread = async (id: string, clearMessages: () => void) => {

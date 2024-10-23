@@ -16,7 +16,6 @@ import { TooltipIconButton } from "@/components/ui/assistant-ui/tooltip-icon-but
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ProgrammingLanguageOptions, Reflections } from "@/types";
-import { BaseMessage } from "@langchain/core/messages";
 import { Thread } from "@langchain/langgraph-sdk";
 import {
   ArrowDownIcon,
@@ -48,7 +47,6 @@ export interface MyThreadProps {
   deleteThread: (id: string) => Promise<void>;
   model: AllModelNames;
   setModel: React.Dispatch<React.SetStateAction<AllModelNames>>;
-  messages: BaseMessage[];
 }
 
 interface QuickStartButtonsProps {
@@ -174,7 +172,6 @@ export const MyThread: FC<MyThreadProps> = (props: MyThreadProps) => {
         <MyThreadScrollToBottom />
         <div className="w-full max-w-2xl space-y-2">
           <ModelSelector
-            messages={props.messages}
             model={props.model}
             setModel={props.setModel}
             createThread={props.createThread}

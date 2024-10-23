@@ -105,7 +105,6 @@ export function ContentComposerChatInterface(
           deleteThread={props.deleteThread}
           model={props.model}
           setModel={props.setModel}
-          messages={props.messages}
         />
       </AssistantRuntimeProvider>
       <Toaster />

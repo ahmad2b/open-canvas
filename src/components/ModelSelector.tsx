@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BaseMessage } from "@langchain/core/messages";
 import { Thread } from "@langchain/langgraph-sdk";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -20,12 +19,10 @@ const allModels: AllModelNames[] = [...openAIModels, ...anthropicModels];
 interface ModelSelectorProps {
   model: AllModelNames;
   setModel: React.Dispatch<React.SetStateAction<AllModelNames>>;
-  messages: BaseMessage[];
   createThread: () => Promise<Thread>;
 }
 
 export default function ModelSelector({
-  messages,
   model,
   setModel,
   createThread,
@@ -44,14 +41,9 @@ export default function ModelSelector({
   }, [searchParams, setModel]);
 
   const handleModelChange = async (newModel: AllModelNames) => {
-    if (messages.length > 0 && newModel !== model) {
-      // Create a new thread with the new model
-      await createThread();
-      setModel(newModel);
-    } else {
-      // Update model within the thread without creating a new thread
-      setModel(newModel);
-    }
+    // Create a new thread with the new model
+    setModel(newModel);
+    await createThread();
   };
 
   return (

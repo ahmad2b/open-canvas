@@ -1,5 +1,6 @@
 "use client";
 
+import { AllModelNames } from "@/agent/lib";
 import { ArtifactRenderer } from "@/components/artifacts/ArtifactRenderer";
 import { ContentComposerChatInterface } from "@/components/ContentComposer";
 import { useToast } from "@/hooks/use-toast";
@@ -119,6 +120,7 @@ export function Canvas(props: CanvasProps) {
             // Chat should only be "started" if there are messages present
             if ((thread.values as Record<string, any>)?.messages?.length) {
               setChatStarted(true);
+              setModel(thread?.metadata?.model as AllModelNames);
             } else {
               setChatStarted(false);
             }
