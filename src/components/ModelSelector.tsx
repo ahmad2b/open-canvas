@@ -11,15 +11,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Thread } from "@langchain/langgraph-sdk";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
 
 const allModels: AllModelNames[] = [...openAIModels, ...anthropicModels];
 
 interface ModelSelectorProps {
   model: AllModelNames;
   setModel: React.Dispatch<React.SetStateAction<AllModelNames>>;
-  createThread: () => Promise<Thread>;
+  createThread: (modelName: AllModelNames) => Promise<Thread>;
 }
 
 export default function ModelSelector({
@@ -27,23 +25,10 @@ export default function ModelSelector({
   setModel,
   createThread,
 }: ModelSelectorProps) {
-  const searchParams = useSearchParams();
-  const initialLoadRef = useRef(true);
-
-  useEffect(() => {
-    if (initialLoadRef.current) {
-      const modelFromParams = searchParams.get("model") as AllModelNames;
-      if (modelFromParams && allModels.includes(modelFromParams)) {
-        setModel(modelFromParams);
-      }
-      initialLoadRef.current = false;
-    }
-  }, [searchParams, setModel]);
-
   const handleModelChange = async (newModel: AllModelNames) => {
     // Create a new thread with the new model
     setModel(newModel);
-    await createThread();
+    await createThread(newModel);
   };
 
   return (

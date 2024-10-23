@@ -14,7 +14,7 @@ export function useThread(userId: string) {
 
   useEffect(() => {
     if (threadId || typeof window === "undefined") return;
-    createThread();
+    createThread(model);
   }, []);
 
   useEffect(() => {
@@ -27,18 +27,20 @@ export function useThread(userId: string) {
     getUserThreads(userId);
   }, [userId]);
 
-  const createThread = async (clearState?: () => void) => {
+  const createThread = async (
+    modelName: AllModelNames,
+    clearState?: () => void
+  ) => {
     clearState?.();
     const client = createClient();
     const thread = await client.threads.create({
       metadata: {
         supabase_user_id: userId,
-        model: model,
+        model: modelName,
       },
     });
     setThreadId(thread.thread_id);
     await getUserThreads(userId);
-    setModel(model);
     return thread;
   };
 
@@ -104,7 +106,7 @@ export function useThread(userId: string) {
       clearMessages();
       // Create a new thread. Use .then to avoid blocking the UI.
       // Once completed re-fetch threads to update UI.
-      createThread().then(async () => {
+      createThread(model).then(async () => {
         await getUserThreads(userId);
       });
     }

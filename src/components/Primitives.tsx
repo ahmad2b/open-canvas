@@ -31,7 +31,7 @@ import { ReflectionsDialog } from "./reflections-dialog/ReflectionsDialog";
 import { ThreadHistory } from "./ThreadHistory";
 
 export interface MyThreadProps {
-  createThread: () => Promise<Thread>;
+  createThread: (modelName: AllModelNames) => Promise<Thread>;
   showNewThreadButton: boolean;
   handleQuickStart: (
     type: "text" | "code",
@@ -120,7 +120,9 @@ export const MyThread: FC<MyThreadProps> = (props: MyThreadProps) => {
   useLangSmithLinkToolUI();
 
   const handleCreateThread = async () => {
-    await props.createThread();
+    const model = "gpt-4o-mini" as AllModelNames;
+    props.setModel(model);
+    await props.createThread(model);
   };
 
   return (
