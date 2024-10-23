@@ -1,4 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
+import { z } from "zod";
+import { ArtifactContent } from "../../../types";
+import { formatArtifactContentWithTemplate } from "../../utils";
 import {
   CURRENT_ARTIFACT_PROMPT,
   NO_ARTIFACT_PROMPT,
@@ -7,9 +10,6 @@ import {
   ROUTE_QUERY_PROMPT,
 } from "../prompts";
 import { OpenCanvasGraphAnnotation } from "../state";
-import { z } from "zod";
-import { ArtifactContent } from "../../../types";
-import { formatArtifactContentWithTemplate } from "../../utils";
 
 /**
  * Routes to the proper node in the graph based on the user's query.
@@ -17,6 +17,8 @@ import { formatArtifactContentWithTemplate } from "../../utils";
 export const generatePath = async (
   state: typeof OpenCanvasGraphAnnotation.State
 ) => {
+  console.log("LOG generatePath state: ", state);
+
   if (state.highlighted) {
     return {
       next: "updateArtifact",
