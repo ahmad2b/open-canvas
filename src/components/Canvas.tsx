@@ -2,8 +2,9 @@
 
 import { ArtifactRenderer } from "@/components/artifacts/ArtifactRenderer";
 import { ContentComposerChatInterface } from "@/components/ContentComposer";
-import { useToast } from "@/hooks/use-toast";
+import { ALL_MODEL_NAMES } from "@/constants";
 import { useGraph } from "@/hooks/use-graph/useGraph";
+import { useToast } from "@/hooks/use-toast";
 import { useStore } from "@/hooks/useStore";
 import { useThread } from "@/hooks/useThread";
 import { getLanguageTemplate } from "@/lib/get_language_template";
@@ -35,6 +36,8 @@ export function Canvas(props: CanvasProps) {
     setThreadId,
     getOrCreateAssistant,
     clearThreadsWithNoValues,
+    modelName,
+    setModelName,
   } = useThread(props.user.id);
   const [chatStarted, setChatStarted] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -59,6 +62,7 @@ export function Canvas(props: CanvasProps) {
     userId: props.user.id,
     threadId,
     assistantId,
+    modelName,
   });
   const {
     reflections,
@@ -106,10 +110,12 @@ export function Canvas(props: CanvasProps) {
     getReflections();
   }, [assistantId]);
 
-  const createThreadWithChatStarted = async () => {
+  const createThreadWithChatStarted = async (
+    customModelName: ALL_MODEL_NAMES
+  ) => {
     setChatStarted(false);
     clearState();
-    return createThread(props.user.id);
+    return createThread(props.user.id, customModelName);
   };
 
   const handleQuickStart = (
@@ -190,6 +196,8 @@ export function Canvas(props: CanvasProps) {
           setChatStarted={setChatStarted}
           showNewThreadButton={chatStarted}
           handleQuickStart={handleQuickStart}
+          modelName={modelName}
+          setModelName={setModelName}
         />
       </div>
       {chatStarted && (

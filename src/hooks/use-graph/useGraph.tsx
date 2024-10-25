@@ -1,4 +1,8 @@
-import { DEFAULT_INPUTS, THREAD_ID_COOKIE_NAME } from "@/constants";
+import {
+  ALL_MODEL_NAMES,
+  DEFAULT_INPUTS,
+  THREAD_ID_COOKIE_NAME,
+} from "@/constants";
 import {
   isArtifactCodeContent,
   isArtifactMarkdownContent,
@@ -77,6 +81,7 @@ export interface UseGraphInput {
   userId: string;
   threadId: string | undefined;
   assistantId: string | undefined;
+  modelName: ALL_MODEL_NAMES;
 }
 
 export function useGraph(useGraphInput: UseGraphInput) {
@@ -246,7 +251,7 @@ export function useGraph(useGraphInput: UseGraphInput) {
           streamMode: "events",
           config: {
             configurable: {
-              customModelName: "gpt-4o-mini",
+              customModelName: useGraphInput.modelName,
             },
           },
         }
