@@ -1,14 +1,14 @@
+import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
-import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
+import { getArtifactContent } from "../../../hooks/use-graph/utils";
+import { Reflections } from "../../../types";
 import {
   ensureStoreInConfig,
   formatArtifactContentWithTemplate,
   formatReflections,
 } from "../../utils";
-import { LangGraphRunnableConfig } from "@langchain/langgraph";
-import { Reflections } from "../../../types";
 import { CURRENT_ARTIFACT_PROMPT, NO_ARTIFACT_PROMPT } from "../prompts";
-import { getArtifactContent } from "../../../hooks/use-graph/utils";
+import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
 
 /**
  * Generate responses to questions. Does not generate artifacts.
@@ -17,6 +17,7 @@ export const respondToQuery = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
+  console.log("respondToQuery config: ", config);
   const smallModel = new ChatOpenAI({
     model: "gpt-4o-mini",
     temperature: 0.5,
