@@ -1,9 +1,9 @@
 "use client";
 import { Canvas } from "@/components/Canvas";
-import { useEffect } from "react";
-import { addAssistantIdToUser } from "@/lib/supabase/add_assistant_id_to_user";
 import { CanvasLoading } from "@/components/CanvasLoading";
 import { useUser } from "@/hooks/useUser";
+import { addAssistantIdToUser } from "@/lib/supabase/add_assistant_id_to_user";
+import { useEffect } from "react";
 
 export default function Home() {
   const { user, getUser } = useUser();
