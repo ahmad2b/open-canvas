@@ -176,7 +176,7 @@ export function useThread(userId: string) {
       const client = createClient();
       const thread = await client.threads.get(id);
       console.log("Got thread", thread);
-      if (thread.metadata && thread.metadata.model) {
+      if (thread.metadata && thread.metadata.customModelName) {
         setModelName(thread.metadata.customModelName as ALL_MODEL_NAMES);
       }
       return await client.threads.get(id);
