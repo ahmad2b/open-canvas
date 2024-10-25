@@ -1,5 +1,5 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
-import { initChatModel } from "langchain/chat_models/universal";
+import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 import {
   ArtifactCodeV3,
@@ -8,11 +8,7 @@ import {
   PROGRAMMING_LANGUAGES,
   Reflections,
 } from "../../../types";
-import {
-  ensureStoreInConfig,
-  formatReflections,
-  getModelNameFromConfig,
-} from "../../utils";
+import { ensureStoreInConfig, formatReflections } from "../../utils";
 import { NEW_ARTIFACT_PROMPT } from "../prompts";
 import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
 
@@ -23,15 +19,10 @@ export const generateArtifact = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const modelName = getModelNameFromConfig(config);
-  const smallModel = await initChatModel(modelName, {
+  const smallModel = new ChatOpenAI({
+    model: "gpt-4o-mini",
     temperature: 0.5,
   });
-
-  // const smallModel = new ChatOpenAI({
-  //   model: "gpt-4o-mini",
-  //   temperature: 0.5,
-  // });
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;
