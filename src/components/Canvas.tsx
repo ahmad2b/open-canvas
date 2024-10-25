@@ -180,6 +180,9 @@ export function Canvas(props: CanvasProps) {
             // Chat should only be "started" if there are messages present
             if ((thread.values as Record<string, any>)?.messages?.length) {
               setChatStarted(true);
+              setModelName(
+                thread?.metadata?.customModelName as ALL_MODEL_NAMES
+              );
             } else {
               setChatStarted(false);
             }
