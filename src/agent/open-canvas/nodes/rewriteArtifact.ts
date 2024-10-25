@@ -1,15 +1,11 @@
-import { ChatOpenAI } from "@langchain/openai";
-import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
+import { LangGraphRunnableConfig } from "@langchain/langgraph";
+import { initChatModel } from "langchain/chat_models/universal";
+import { z } from "zod";
+import { getArtifactContent } from "../../../hooks/use-graph/utils";
 import {
-  GET_TITLE_TYPE_REWRITE_ARTIFACT,
-  OPTIONALLY_UPDATE_META_PROMPT,
-  UPDATE_ENTIRE_ARTIFACT_PROMPT,
-} from "../prompts";
-import {
-  ensureStoreInConfig,
-  formatArtifactContent,
-  formatReflections,
-} from "../../utils";
+  isArtifactCodeContent,
+  isArtifactMarkdownContent,
+} from "../../../lib/artifact_content_types";
 import {
   ArtifactCodeV3,
   ArtifactMarkdownV3,
@@ -17,22 +13,32 @@ import {
   PROGRAMMING_LANGUAGES,
   Reflections,
 } from "../../../types";
-import { LangGraphRunnableConfig } from "@langchain/langgraph";
-import { z } from "zod";
-import { getArtifactContent } from "../../../hooks/use-graph/utils";
 import {
-  isArtifactCodeContent,
-  isArtifactMarkdownContent,
-} from "../../../lib/artifact_content_types";
+  ensureStoreInConfig,
+  formatArtifactContent,
+  formatReflections,
+  getModelNameFromConfig,
+} from "../../utils";
+import {
+  GET_TITLE_TYPE_REWRITE_ARTIFACT,
+  OPTIONALLY_UPDATE_META_PROMPT,
+  UPDATE_ENTIRE_ARTIFACT_PROMPT,
+} from "../prompts";
+import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
 
 export const rewriteArtifact = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
-  const smallModel = new ChatOpenAI({
-    model: "gpt-4o-mini",
+  const modelName = getModelNameFromConfig(config);
+  const smallModel = await initChatModel(modelName, {
     temperature: 0.5,
   });
+
+  // const smallModel = new ChatOpenAI({
+  //   model: "gpt-4o-mini",
+  //   temperature: 0.5,
+  // });
 
   const store = ensureStoreInConfig(config);
   const assistantId = config.configurable?.assistant_id;

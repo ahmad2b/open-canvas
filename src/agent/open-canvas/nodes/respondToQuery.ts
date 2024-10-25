@@ -1,11 +1,12 @@
 import { LangGraphRunnableConfig } from "@langchain/langgraph";
-import { ChatOpenAI } from "@langchain/openai";
+import { initChatModel } from "langchain/chat_models/universal";
 import { getArtifactContent } from "../../../hooks/use-graph/utils";
 import { Reflections } from "../../../types";
 import {
   ensureStoreInConfig,
   formatArtifactContentWithTemplate,
   formatReflections,
+  getModelNameFromConfig,
 } from "../../utils";
 import { CURRENT_ARTIFACT_PROMPT, NO_ARTIFACT_PROMPT } from "../prompts";
 import { OpenCanvasGraphAnnotation, OpenCanvasGraphReturnType } from "../state";
@@ -18,10 +19,15 @@ export const respondToQuery = async (
   config: LangGraphRunnableConfig
 ): Promise<OpenCanvasGraphReturnType> => {
   console.log("respondToQuery config: ", config);
-  const smallModel = new ChatOpenAI({
-    model: "gpt-4o-mini",
+  const modelName = getModelNameFromConfig(config);
+  const smallModel = await initChatModel(modelName, {
     temperature: 0.5,
   });
+
+  // const smallModel = new ChatOpenAI({
+  //   model: "gpt-4o-mini",
+  //   temperature: 0.5,
+  // });
 
   const prompt = `You are an AI assistant tasked with responding to the users question.
   

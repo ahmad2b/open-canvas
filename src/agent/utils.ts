@@ -78,3 +78,13 @@ export const formatArtifactContentWithTemplate = (
     formatArtifactContent(content, shortenContent)
   );
 };
+
+export const getModelNameFromConfig = (
+  config: LangGraphRunnableConfig
+): string => {
+  const customModelName = config.metadata?.customModelName as string;
+  if (!customModelName) {
+    throw new Error("Model name is missing in config.");
+  }
+  return customModelName;
+};
