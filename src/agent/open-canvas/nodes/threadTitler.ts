@@ -1,10 +1,9 @@
-import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { Client } from "@langchain/langgraph-sdk";
 import { OpenCanvasGraphAnnotation } from "../state";
 
 export const threadTitler = async (
-  state: typeof OpenCanvasGraphAnnotation.State,
-  config: LangGraphRunnableConfig
+  state: typeof OpenCanvasGraphAnnotation.State
+  // config: LangGraphRunnableConfig
 ) => {
   const langgraphClient = new Client({
     apiUrl: `http://localhost:${process.env.PORT}`,
@@ -18,15 +17,11 @@ export const threadTitler = async (
     artifact: state.artifact,
   };
 
-  console.log("Thread Titler Input: ", threadTitlerInput);
-
-  const threadTitlerConfig = {
-    configurable: {
-      assistant_id: config.configurable?.assistant_id,
-    },
-  };
-
-  console.log("Thread Titler Config: ", threadTitlerConfig);
+  // const threadTitlerConfig = {
+  //   configurable: {
+  //     assistant_id: config.configurable?.assistant_id,
+  //   },
+  // };
 
   const newThread = await langgraphClient.threads.create();
 
@@ -34,7 +29,7 @@ export const threadTitler = async (
 
   await langgraphClient.runs.create(newThread.thread_id, "threadTitler", {
     input: threadTitlerInput,
-    config: threadTitlerConfig,
+    // config: threadTitlerConfig,
     multitaskStrategy: "enqueue",
     afterSeconds: 15,
   });
