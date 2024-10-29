@@ -1,37 +1,41 @@
+import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { Client } from "@langchain/langgraph-sdk";
 import { OpenCanvasGraphAnnotation } from "../state";
 
 export const threadTitler = async (
-  state: typeof OpenCanvasGraphAnnotation.State
-  // config: LangGraphRunnableConfig
+  state: typeof OpenCanvasGraphAnnotation.State,
+  config: LangGraphRunnableConfig
 ) => {
-  const langgraphClient = new Client({
+  // Only generate title for first message in a thread
+  if (state.messages.length > 1) {
+    return {};
+  }
+
+  const langGraphClient = new Client({
     apiUrl: `http://localhost:${process.env.PORT}`,
     defaultHeaders: {
       "X-API-KEY": process.env.LANGCHAIN_API_KEY,
     },
   });
 
-  const threadTitlerInput = {
+  const titleInput = {
     messages: state.messages,
     artifact: state.artifact,
   };
 
-  // const threadTitlerConfig = {
-  //   configurable: {
-  //     assistant_id: config.configurable?.assistant_id,
-  //   },
-  // };
+  const newThread = await langGraphClient.threads.create();
 
-  const newThread = await langgraphClient.threads.create();
-
-  console.log("New Thread: ", newThread.status);
-
-  await langgraphClient.runs.create(newThread.thread_id, "threadTitler", {
-    input: threadTitlerInput,
-    // config: threadTitlerConfig,
+  // Create a new title generation run as a background task
+  await langGraphClient.runs.create(newThread.thread_id, "title_generation", {
+    input: titleInput,
+    config: {
+      configurable: {
+        thread_id: config.configurable?.thread_id,
+      },
+    },
     multitaskStrategy: "enqueue",
-    afterSeconds: 15,
+    // Run after a short delay to ensure all processing is complete
+    afterSeconds: 5,
   });
 
   return {};

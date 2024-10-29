@@ -47,6 +47,7 @@ const builder = new StateGraph(OpenCanvasGraphAnnotation)
   .addNode("cleanState", cleanState)
   .addNode("reflect", reflectNode)
   .addNode("threadTitler", threadTitler)
+
   // Initial router
   .addConditionalEdges("generatePath", routeNode, [
     "updateArtifact",
