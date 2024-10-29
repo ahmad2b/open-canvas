@@ -17,13 +17,20 @@ export const threadTitler = async (
     messages: state.messages,
     artifact: state.artifact,
   };
+
+  console.log("Thread Titler Input: ", threadTitlerInput);
+
   const threadTitlerConfig = {
     configurable: {
-      open_canvas_assistant_id: config.configurable?.assistant_id,
+      assistant_id: config.configurable?.assistant_id,
     },
   };
 
+  console.log("Thread Titler Config: ", threadTitlerConfig);
+
   const newThread = await langgraphClient.threads.create();
+
+  console.log("New Thread: ", newThread.status);
 
   await langgraphClient.runs.create(newThread.thread_id, "threadTitler", {
     input: threadTitlerInput,

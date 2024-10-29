@@ -24,11 +24,11 @@ export const threadTitler = async (
   const store = ensureStoreInConfig(config);
   console.log("Store initialized");
 
-  const assistantId = config.configurable?.open_canvas_assistant_id;
+  const assistantId = config.configurable?.assistant_id;
   console.log("Assistant ID:", assistantId);
 
   if (!assistantId) {
-    throw new Error("`open_canvas_assistant_id` not found in configurable");
+    throw new Error("`assistant_id` not found in configurable in threadTitler");
   }
 
   const memoryNamespace = ["memories", assistantId];
