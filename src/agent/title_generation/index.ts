@@ -1,10 +1,10 @@
-import { ChatAnthropic } from "@langchain/anthropic";
 import {
   type LangGraphRunnableConfig,
   START,
   StateGraph,
 } from "@langchain/langgraph";
 import { Client } from "@langchain/langgraph-sdk";
+import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 import { getArtifactContent } from "../../hooks/use-graph/utils";
 import { isArtifactMarkdownContent } from "../../lib/artifact_content_types";
@@ -26,7 +26,7 @@ export const generateTitle = async (
     }),
   };
 
-  const model = new ChatAnthropic({
+  const model = new ChatOpenAI({
     model: "gpt-4o-mini",
     temperature: 0,
   }).bindTools([generateTitleTool], {
