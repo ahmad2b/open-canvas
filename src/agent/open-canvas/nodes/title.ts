@@ -2,15 +2,10 @@ import { LangGraphRunnableConfig } from "@langchain/langgraph";
 import { Client } from "@langchain/langgraph-sdk";
 import { OpenCanvasGraphAnnotation } from "../state";
 
-export const threadTitler = async (
+export const titleNode = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ) => {
-  // Only generate title for first message in a thread
-  if (state.messages.length > 1) {
-    return {};
-  }
-
   const langGraphClient = new Client({
     apiUrl: `http://localhost:${process.env.PORT}`,
     defaultHeaders: {
@@ -22,20 +17,22 @@ export const threadTitler = async (
     messages: state.messages,
     artifact: state.artifact,
   };
+  const titleConfig = {
+    configurable: {
+      thread_id: config.configurable?.thread_id,
+    },
+  };
 
+  // Create a new thread for title generation
   const newThread = await langGraphClient.threads.create();
 
-  // Create a new title generation run as a background task
-  await langGraphClient.runs.create(newThread.thread_id, "title_generation", {
+  // Create a new title generation run in the background
+  await langGraphClient.runs.create(newThread.thread_id, "title", {
     input: titleInput,
-    config: {
-      configurable: {
-        thread_id: config.configurable?.thread_id,
-      },
-    },
+    config: titleConfig,
     multitaskStrategy: "enqueue",
-    // Run after a short delay to ensure all processing is complete
-    afterSeconds: 5,
+    // Run immediately after the first message
+    afterSeconds: 0,
   });
 
   return {};
