@@ -19,7 +19,7 @@ export const titleNode = async (
   };
   const titleConfig = {
     configurable: {
-      thread_id: config.configurable?.thread_id,
+      open_canvas_thread_id: config.configurable?.thread_id,
       open_canvas_assistant_id: config.configurable?.assistant_id,
     },
   };

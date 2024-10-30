@@ -16,18 +16,18 @@ export const generateTitle = async (
   config: LangGraphRunnableConfig
 ): Promise<TitleGenerationReturnType> => {
   const store = ensureStoreInConfig(config);
-  const threadId = config.configurable?.thread_id;
+  const threadId = config.configurable?.open_canvas_thread_id;
   const assistantId = config.configurable?.open_canvas_assistant_id;
 
   if (!threadId) {
-    throw new Error("thread_id not found in configurable");
+    throw new Error("open_canvas_thread_id not found in configurable");
   }
   if (!assistantId) {
     throw new Error("`open_canvas_assistant_id` not found in configurable");
   }
 
   const memoryNamespace = ["memories", assistantId];
-  const memoryKey = "title";
+  const memoryKey = "thread_title";
 
   const generateTitleTool = {
     name: "generate_title",
@@ -83,7 +83,7 @@ export const generateTitle = async (
   }
 
   const newMemories = {
-    thread_title: titleToolCall.args.title,
+    value: titleToolCall.args.title,
   };
 
   const assistantStore = await store.put(
