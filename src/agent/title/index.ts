@@ -3,6 +3,7 @@ import {
   START,
   StateGraph,
 } from "@langchain/langgraph";
+import { Client } from "@langchain/langgraph-sdk";
 import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 import { getArtifactContent } from "../../hooks/use-graph/utils";
@@ -17,17 +18,10 @@ export const generateTitle = async (
 ): Promise<TitleGenerationReturnType> => {
   const store = ensureStoreInConfig(config);
   const threadId = config.configurable?.open_canvas_thread_id;
-  const assistantId = config.configurable?.open_canvas_assistant_id;
 
   if (!threadId) {
     throw new Error("open_canvas_thread_id not found in configurable");
   }
-  if (!assistantId) {
-    throw new Error("`open_canvas_assistant_id` not found in configurable");
-  }
-
-  const memoryNamespace = ["memories", assistantId];
-  const memoryKey = "thread_title";
 
   const generateTitleTool = {
     name: "generate_title",
@@ -82,25 +76,25 @@ export const generateTitle = async (
     throw new Error("Title generation tool call failed.");
   }
 
-  const newMemories = {
-    value: titleToolCall.args.title,
-  };
-
-  const assistantStore = await store.put(
-    memoryNamespace,
-    memoryKey,
-    newMemories
-  );
-
-  console.log("Assistant store", assistantStore);
-
   // Update thread metadata with the generated title
-  const threadStore = await store.put(
+  await store.put(
     ["threads", threadId, "metadata"],
     "thread_title",
     titleToolCall.args.title
   );
-  console.log("Thread store", threadStore);
+
+  const langGraphClient = new Client({
+    apiUrl: `http://localhost:${process.env.PORT}`,
+    defaultHeaders: {
+      "X-API-KEY": process.env.LANGCHAIN_API_KEY,
+    },
+  });
+
+  await langGraphClient.threads.update(threadId, {
+    metadata: {
+      thread_title: titleToolCall.args.title,
+    },
+  });
 
   return {};
 };
