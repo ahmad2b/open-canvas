@@ -85,7 +85,7 @@ export const generateTitle = async (
 };
 
 const builder = new StateGraph(TitleGenerationAnnotation)
-  .addNode("generateTitle", generateTitle)
-  .addEdge(START, "generateTitle");
+  .addNode("title", generateTitle)
+  .addEdge(START, "title");
 
 export const graph = builder.compile().withConfig({ runName: "title" });
