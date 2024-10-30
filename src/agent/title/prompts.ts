@@ -10,7 +10,7 @@ Guidelines for title generation:
 
 Use the 'generate_title' tool to output your title.`;
 
-export const TITLE_USER_PROMPT = `Here is the conversation to generate a title for:
+export const TITLE_USER_PROMPT = `Based on the following conversation, generate a very short and descriptive title for:
 
 {conversation}
 

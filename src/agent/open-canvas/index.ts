@@ -71,6 +71,7 @@ const builder = new StateGraph(OpenCanvasGraphAnnotation)
   // Only reflect if an artifact was generated/updated.
   .addEdge("generateFollowup", "reflect")
   .addEdge("reflect", "cleanState")
+  // .addEdge("cleanState", END);
   .addEdge("cleanState", "title")
   .addEdge("title", END);
 
