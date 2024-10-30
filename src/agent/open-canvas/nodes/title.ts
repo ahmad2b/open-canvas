@@ -6,6 +6,11 @@ export const titleNode = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ) => {
+  if (state.messages.length > 1) {
+    // Not the first message in the thread; skip title generation.
+    return {};
+  }
+
   const langGraphClient = new Client({
     apiUrl: `http://localhost:${process.env.PORT}`,
     defaultHeaders: {
