@@ -3,6 +3,7 @@ import {
   START,
   StateGraph,
 } from "@langchain/langgraph";
+import { Client } from "@langchain/langgraph-sdk";
 import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 import { getArtifactContent } from "../../hooks/use-graph/utils";
@@ -80,6 +81,21 @@ export const generateTitle = async (
     "thread_title",
     titleToolCall.args.title
   );
+
+  const langGraphClient = new Client({
+    apiUrl: `http://localhost:${process.env.PORT}`,
+    defaultHeaders: {
+      "X-API-KEY": process.env.LANGCHAIN_API_KEY,
+    },
+  });
+
+  const updatethread = await langGraphClient.threads.update(threadId, {
+    metadata: {
+      thread_title: titleToolCall.args.title,
+    },
+  });
+
+  console.log("UPDATED THREAD", updatethread);
 
   return {};
 };
