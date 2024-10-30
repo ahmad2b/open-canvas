@@ -6,8 +6,8 @@ export const titleNode = async (
   state: typeof OpenCanvasGraphAnnotation.State,
   config: LangGraphRunnableConfig
 ) => {
-  if (state.messages.length > 1) {
-    // Not the first message in the thread; skip title generation.
+  if (state.messages.length > 2) {
+    // Skip if it's not first human ai conversation
     return {};
   }
 
